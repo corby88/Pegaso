@@ -25,7 +25,7 @@ function showStartScreen() {
   const div = document.createElement("div");
 
   const label = document.createElement("label");
-  label.textContent = `Quante domande vuoi affrontare? (1-${questions.length}): `;
+  label.textContent = `Quante domande vuoi? (Massimo ${questions.length}): `;
   div.appendChild(label);
 
   const input = document.createElement("input");
