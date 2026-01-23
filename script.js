@@ -84,9 +84,9 @@ function showQuestion() {
     quiz.appendChild(div);
   });
 
-  // Bottone "Fine" per avanzare o terminare
+  // Bottone "Prossima domanda" (apparentemente sotto le risposte)
   const nextBtn = document.createElement("button");
-  nextBtn.textContent = index < exam.length - 1 ? "Fine" : "Fine";
+  nextBtn.textContent = index < exam.length - 1 ? "Prossima domanda" : "Prossima domanda";
   nextBtn.style.marginTop = "10px";
   nextBtn.onclick = () => {
     const checked = document.querySelector('input[name="answer"]:checked');
@@ -121,9 +121,9 @@ function finishExam() {
   quiz.innerHTML += `<h3>Punteggio: ${score}/30</h3>`;
   quiz.innerHTML += `<h2>${score >= 18 ? "🎉 ESAME SUPERATO" : "❌ ESAME NON SUPERATO"}</h2>`;
 
-  // Bottone "Fine" per tornare alla schermata iniziale
+  // Bottone "Prossima domanda" finale per tornare alla schermata iniziale
   const finishBtn = document.createElement("button");
-  finishBtn.textContent = "Fine";
+  finishBtn.textContent = "Prossima domanda";
   finishBtn.onclick = showStartScreen;
   quiz.appendChild(finishBtn);
 }
