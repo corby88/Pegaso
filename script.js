@@ -34,7 +34,8 @@ function startExam() {
 }
 
 function startTimer() {
-  clearInterval(timerInterval); // evita timer multipli
+  clearInterval(timerInterval);
+  timerDiv.textContent = "";
   timerInterval = setInterval(() => {
     if (time <= 0) {
       clearInterval(timerInterval);
@@ -52,30 +53,31 @@ function showQuestion() {
   quiz.innerHTML = `<h3>${index + 1}. ${q.text}</h3>`;
 
   q.answers.forEach((a, i) => {
-    quiz.innerHTML += `
-      <div class="answer">
-        <input type="radio" name="answer" value="${i}">
-        ${a.text}
-      </div>`;
+    const div = document.createElement("div");
+    div.className = "answer";
+
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "answer";
+    input.value = i;
+
+    input.onchange = () => {
+      selected[index] = parseInt(input.value);
+      index++;
+      if (index < exam.length) showQuestion();
+      else finishExam();
+    };
+
+    div.appendChild(input);
+    div.appendChild(document.createTextNode(a.text));
+    quiz.appendChild(div);
   });
-
-  const nextBtn = document.createElement("button");
-  nextBtn.textContent = index < exam.length - 1 ? "Prossima Domanda" : "Termina Esame";
-  nextBtn.onclick = () => {
-    const checked = document.querySelector('input[name="answer"]:checked');
-    if (!checked) return alert("Seleziona una risposta");
-
-    selected[index] = parseInt(checked.value);
-    index++;
-
-    if (index < exam.length) showQuestion();
-    else finishExam();
-  };
-  quiz.appendChild(nextBtn);
 }
 
 function finishExam() {
   clearInterval(timerInterval);
+  timerDiv.textContent = "";
+
   let score = 0;
   quiz.innerHTML = "<h2>Risultato</h2>";
 
@@ -92,11 +94,11 @@ function finishExam() {
   quiz.innerHTML += `<h3>Punteggio: ${score}/30</h3>`;
   quiz.innerHTML += `<h2>${score >= 18 ? "🎉 ESAME SUPERATO" : "❌ ESAME NON SUPERATO"}</h2>`;
 
-  // Bottone per tornare alla schermata iniziale
-  const restartBtn = document.createElement("button");
-  restartBtn.textContent = "Ritorna alla schermata iniziale";
-  restartBtn.onclick = showStartScreen;
-  quiz.appendChild(restartBtn);
+  // Bottone "Fine" per tornare alla schermata iniziale
+  const finishBtn = document.createElement("button");
+  finishBtn.textContent = "Fine";
+  finishBtn.onclick = showStartScreen;
+  quiz.appendChild(finishBtn);
 }
 
 // Mostra subito la schermata iniziale
