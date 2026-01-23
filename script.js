@@ -55,23 +55,50 @@ function showQuestion() {
   q.answers.forEach((a, i) => {
     const div = document.createElement("div");
     div.className = "answer";
+    div.style.padding = "5px";
+    div.style.borderRadius = "5px";
+    div.style.margin = "5px 0";
 
     const input = document.createElement("input");
     input.type = "radio";
     input.name = "answer";
     input.value = i;
 
+    // Se l'utente aveva già selezionato una risposta, la rimarca
+    if (selected[index] === i) {
+      input.checked = true;
+      div.style.backgroundColor = "#d4edda"; // verde chiaro per selezionata
+    }
+
     input.onchange = () => {
-      selected[index] = parseInt(input.value);
-      index++;
-      if (index < exam.length) showQuestion();
-      else finishExam();
+      // Deseleziona tutte le altre risposte visivamente
+      const allAnswers = document.querySelectorAll(".answer");
+      allAnswers.forEach(aDiv => aDiv.style.backgroundColor = "");
+
+      // Evidenzia quella selezionata
+      div.style.backgroundColor = "#d4edda";
     };
 
     div.appendChild(input);
     div.appendChild(document.createTextNode(a.text));
     quiz.appendChild(div);
   });
+
+  // Bottone "Fine" per avanzare o terminare
+  const nextBtn = document.createElement("button");
+  nextBtn.textContent = index < exam.length - 1 ? "Fine" : "Fine";
+  nextBtn.style.marginTop = "10px";
+  nextBtn.onclick = () => {
+    const checked = document.querySelector('input[name="answer"]:checked');
+    if (!checked) return alert("Seleziona una risposta");
+
+    selected[index] = parseInt(checked.value);
+    index++;
+
+    if (index < exam.length) showQuestion();
+    else finishExam();
+  };
+  quiz.appendChild(nextBtn);
 }
 
 function finishExam() {
