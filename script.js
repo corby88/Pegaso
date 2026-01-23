@@ -9,7 +9,9 @@ const timerDiv = document.getElementById("timer");
 let exam = [];
 let timerInterval;
 
+// ===========================
 // Schermata iniziale
+// ===========================
 function showStartScreen() {
   clearInterval(timerInterval);
   selected = [];
@@ -19,23 +21,30 @@ function showStartScreen() {
 
   quiz.innerHTML = '';
 
-  // Label e input per numero di domande
+  // Container input numero di domande
+  const div = document.createElement("div");
+
   const label = document.createElement("label");
-  label.textContent = `Quante domande vuoi affrontare? (1-${questions.length}) `;
+  label.textContent = `Quante domande vuoi affrontare? (MAX-${questions.length}): `;
+  div.appendChild(label);
+
   const input = document.createElement("input");
   input.type = "number";
   input.min = 1;
   input.max = questions.length;
   input.value = 30;
-  label.appendChild(input);
-  quiz.appendChild(label);
+  div.appendChild(input);
 
-  quiz.appendChild(document.createElement("br"));
+  quiz.appendChild(div);
 
-  // Bottone per iniziare
+  // Bottone per iniziare l'esame
   const startBtn = document.createElement("button");
   startBtn.textContent = "Inizia Esame";
-  startBtn.onclick = () => {
+  quiz.appendChild(document.createElement("br"));
+  quiz.appendChild(startBtn);
+
+  // Evento del bottone
+  startBtn.addEventListener("click", () => {
     const val = parseInt(input.value);
     if (isNaN(val) || val < 1 || val > questions.length) {
       alert(`Inserisci un numero valido tra 1 e ${questions.length}`);
@@ -43,23 +52,116 @@ function showStartScreen() {
     }
     numQuestions = val;
     startExam();
-  };
-  quiz.appendChild(startBtn);
+  });
 }
 
+// ===========================
+// Avvio dell’esame
+// ===========================
 function startExam() {
   selected = [];
   index = 0;
   time = 1800;
 
-  // Estrazione casuale del numero di domande scelto
+  // Estraggo il numero di domande scelto dall’utente
   exam = [...questions].sort(() => 0.5 - Math.random()).slice(0, numQuestions);
 
   showQuestion();
   startTimer();
 }
 
-// Alla fine dell'esame, modifica il punteggio in base al numero di domande
+// ===========================
+// Timer
+// ===========================
+function startTimer() {
+  clearInterval(timerInterval);
+  timerDiv.textContent = "";
+  timerInterval = setInterval(() => {
+    if (time <= 0) {
+      clearInterval(timerInterval);
+      finishExam();
+    }
+    time--;
+    const min = String(Math.floor(time / 60)).padStart(2, "0");
+    const sec = String(time % 60).padStart(2, "0");
+    timerDiv.textContent = `${min}:${sec}`;
+  }, 1000);
+}
+
+// ===========================
+// Mostra domanda
+// ===========================
+function showQuestion() {
+  const q = exam[index];
+  quiz.innerHTML = `<h3>${index + 1}. ${q.text}</h3>`;
+
+  q.answers.forEach((a, i) => {
+    const div = document.createElement("div");
+    div.className = "answer";
+
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "answer";
+    input.value = i;
+
+    if (selected[index] === i) {
+      input.checked = true;
+      div.style.backgroundColor = "#d4edda";
+    }
+
+    input.onchange = () => {
+      const allAnswers = document.querySelectorAll(".answer");
+      allAnswers.forEach(aDiv => aDiv.style.backgroundColor = "#f9f9f9");
+
+      selected[index] = i;
+      div.style.backgroundColor = "#d4edda";
+    };
+
+    div.appendChild(input);
+    div.appendChild(document.createTextNode(a.text));
+    quiz.appendChild(div);
+  });
+
+  // Contenitore bottoni
+  const btnBox = document.createElement("div");
+
+  // Bottone PRECEDENTE
+  if (index > 0) {
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "⬅ Domanda precedente";
+    prevBtn.onclick = () => {
+      index--;
+      showQuestion();
+    };
+    btnBox.appendChild(prevBtn);
+  }
+
+  // Bottone PROSSIMA / TERMINA
+  const nextBtn = document.createElement("button");
+
+  if (index === exam.length - 1) {
+    nextBtn.textContent = "Termina Esame";
+    nextBtn.classList.add("terminate");
+    nextBtn.onclick = finishExam;
+  } else {
+    nextBtn.textContent = "Prossima domanda";
+    nextBtn.onclick = () => {
+      if (selected[index] === undefined) {
+        alert("Seleziona una risposta");
+        return;
+      }
+      index++;
+      showQuestion();
+    };
+  }
+
+  btnBox.appendChild(nextBtn);
+  quiz.appendChild(btnBox);
+}
+
+// ===========================
+// Fine esame
+// ===========================
 function finishExam() {
   clearInterval(timerInterval);
   timerDiv.textContent = "";
@@ -92,5 +194,7 @@ function finishExam() {
   quiz.appendChild(finishBtn);
 }
 
+// ===========================
 // Avvio
+// ===========================
 showStartScreen();
