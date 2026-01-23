@@ -8,7 +8,7 @@ const timerDiv = document.getElementById("timer");
 let exam = [];
 let timerInterval;
 
-// Mostra solo bottone "Inizia Esame"
+// Schermata iniziale
 function showStartScreen() {
   clearInterval(timerInterval);
   selected = [];
@@ -55,13 +55,6 @@ function showQuestion() {
   q.answers.forEach((a, i) => {
     const div = document.createElement("div");
     div.className = "answer";
-    div.style.padding = "12px 15px";
-    div.style.borderRadius = "8px";
-    div.style.margin = "10px 0";
-    div.style.border = "1px solid #ccc";
-    div.style.cursor = "pointer";
-    div.style.background = "#f9f9f9";
-    div.style.transition = "all 0.3s ease";
 
     const input = document.createElement("input");
     input.type = "radio";
@@ -70,15 +63,14 @@ function showQuestion() {
 
     if (selected[index] === i) {
       input.checked = true;
-      div.style.backgroundColor = "#d4edda"; // verde chiaro selezionata
+      div.style.backgroundColor = "#d4edda";
     }
 
     input.onchange = () => {
-      // Deseleziona tutte le altre risposte visivamente
       const allAnswers = document.querySelectorAll(".answer");
-      allAnswers.forEach(aDiv => aDiv.style.backgroundColor = "");
+      allAnswers.forEach(aDiv => aDiv.style.backgroundColor = "#f9f9f9");
 
-      // Evidenzia quella selezionata
+      selected[index] = i;
       div.style.backgroundColor = "#d4edda";
     };
 
@@ -87,27 +79,41 @@ function showQuestion() {
     quiz.appendChild(div);
   });
 
-  // Bottone finale per confermare la risposta
+  // Contenitore bottoni
+  const btnBox = document.createElement("div");
+
+  // Bottone PRECEDENTE
+  if (index > 0) {
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "⬅ Domanda precedente";
+    prevBtn.onclick = () => {
+      index--;
+      showQuestion();
+    };
+    btnBox.appendChild(prevBtn);
+  }
+
+  // Bottone PROSSIMA / TERMINA
   const nextBtn = document.createElement("button");
 
-  // Se siamo all'ultima domanda, mostra "Termina esame"
   if (index === exam.length - 1) {
     nextBtn.textContent = "Termina Esame";
-    nextBtn.onclick = () => finishExam();
+    nextBtn.classList.add("terminate");
+    nextBtn.onclick = finishExam;
   } else {
     nextBtn.textContent = "Prossima domanda";
     nextBtn.onclick = () => {
-      const checked = document.querySelector('input[name="answer"]:checked');
-      if (!checked) return alert("Seleziona una risposta");
-
-      selected[index] = parseInt(checked.value);
+      if (selected[index] === undefined) {
+        alert("Seleziona una risposta");
+        return;
+      }
       index++;
       showQuestion();
     };
   }
 
-  nextBtn.style.marginTop = "15px";
-  quiz.appendChild(nextBtn);
+  btnBox.appendChild(nextBtn);
+  quiz.appendChild(btnBox);
 }
 
 function finishExam() {
@@ -121,22 +127,24 @@ function finishExam() {
     const correct = q.answers.findIndex(a => a.correct);
     if (selected[i] === correct) score++;
     else {
-      quiz.innerHTML += `<p><b>${q.text}</b><br>
-      ❌ Tua risposta: ${q.answers[selected[i]]?.text || "nessuna"}<br>
-      ✅ Corretta: ${q.answers[correct].text}</p>`;
+      quiz.innerHTML += `
+        <p>
+          <b>${q.text}</b><br>
+          ❌ Tua risposta: ${q.answers[selected[i]]?.text || "nessuna"}<br>
+          ✅ Corretta: ${q.answers[correct].text}
+        </p>`;
     }
   });
 
   quiz.innerHTML += `<h3>Punteggio: ${score}/30</h3>`;
   quiz.innerHTML += `<h2>${score >= 18 ? "🎉 ESAME SUPERATO" : "❌ ESAME NON SUPERATO"}</h2>`;
 
-  // Bottone finale per tornare alla schermata iniziale
   const finishBtn = document.createElement("button");
   finishBtn.textContent = "Fine";
+  finishBtn.classList.add("terminate");
   finishBtn.onclick = showStartScreen;
-  finishBtn.style.marginTop = "20px";
   quiz.appendChild(finishBtn);
 }
 
-// Mostra subito la schermata iniziale
+// Avvio
 showStartScreen();
