@@ -1804,7 +1804,19 @@ const questions = [
     "text": "In SQL, se nel comando DROP viene specificato cascade:",
     "answers": [
       {
+        "text": "L'eliminazione non viene consentita se è presente un vincolo di integrità referenzialeL'eliminazione procede a catena, per cui tutti gli elementi che dipendono da un elemento rimosso, vengono rimossi",
+        "correct": true
+      },
+      {
+        "text": "L'eliminazione non viene consentita se ci sono elementi che dipendono dall'elemento che si vuole rimuovere",
+        "correct": false
+      },
+      {
         "text": "L'eliminazione non viene consentita se è presente un vincolo di integrità referenziale",
+        "correct": false
+      },
+      {
+        "text": "è presente un vincolo di integrità referenziale, dopo la rimozione si aggiungono valori nulli per i valori deglielementi che dipendono da quelli rimossi",
         "correct": false
       }
     ]
