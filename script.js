@@ -25,7 +25,7 @@ function showStartScreen() {
   const div = document.createElement("div");
 
   const label = document.createElement("label");
-  label.textContent = `Quante domande vuoi affrontare? (MAX-${questions.length}): `;
+  label.textContent = `Quante domande vuoi? (MAX${questions.length}): `;
   div.appendChild(label);
 
   const input = document.createElement("input");
@@ -98,11 +98,22 @@ function showQuestion() {
   q.answers.forEach((a, i) => {
     const div = document.createElement("div");
     div.className = "answer";
+    div.style.padding = "5px";
+    div.style.marginBottom = "5px";
+    div.style.borderRadius = "5px";
+    div.style.backgroundColor = "#f9f9f9";
 
     const input = document.createElement("input");
     input.type = "radio";
     input.name = "answer";
+    input.id = `q${index}_a${i}`; // id unico per label
     input.value = i;
+
+    const label = document.createElement("label");
+    label.htmlFor = input.id;
+    label.textContent = a.text;
+    label.style.cursor = "pointer"; // indica che è cliccabile
+    label.style.marginLeft = "8px";
 
     if (selected[index] === i) {
       input.checked = true;
@@ -118,12 +129,13 @@ function showQuestion() {
     };
 
     div.appendChild(input);
-    div.appendChild(document.createTextNode(a.text));
+    div.appendChild(label);
     quiz.appendChild(div);
   });
 
   // Contenitore bottoni
   const btnBox = document.createElement("div");
+  btnBox.style.marginTop = "10px";
 
   // Bottone PRECEDENTE
   if (index > 0) {
@@ -138,6 +150,7 @@ function showQuestion() {
 
   // Bottone PROSSIMA / TERMINA
   const nextBtn = document.createElement("button");
+  nextBtn.style.marginLeft = "5px";
 
   if (index === exam.length - 1) {
     nextBtn.textContent = "Termina Esame";
