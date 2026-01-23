@@ -1,6 +1,6 @@
 let selected = [];
 let index = 0;
-let time = 1800;
+//let time = 1800;
 let numQuestions = 30;
 
 const quiz = document.getElementById("quiz");
@@ -16,7 +16,7 @@ function showStartScreen() {
   clearInterval(timerInterval);
   selected = [];
   index = 0;
-  time = 1800;
+  //time = 1800;
   timerDiv.textContent = "";
 
   quiz.innerHTML = '';
