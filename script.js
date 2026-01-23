@@ -55,19 +55,22 @@ function showQuestion() {
   q.answers.forEach((a, i) => {
     const div = document.createElement("div");
     div.className = "answer";
-    div.style.padding = "5px";
-    div.style.borderRadius = "5px";
-    div.style.margin = "5px 0";
+    div.style.padding = "12px 15px";
+    div.style.borderRadius = "8px";
+    div.style.margin = "10px 0";
+    div.style.border = "1px solid #ccc";
+    div.style.cursor = "pointer";
+    div.style.background = "#f9f9f9";
+    div.style.transition = "all 0.3s ease";
 
     const input = document.createElement("input");
     input.type = "radio";
     input.name = "answer";
     input.value = i;
 
-    // Se l'utente aveva già selezionato una risposta, la rimarca
     if (selected[index] === i) {
       input.checked = true;
-      div.style.backgroundColor = "#d4edda"; // verde chiaro per selezionata
+      div.style.backgroundColor = "#d4edda"; // verde chiaro selezionata
     }
 
     input.onchange = () => {
@@ -84,20 +87,26 @@ function showQuestion() {
     quiz.appendChild(div);
   });
 
-  // Bottone "Prossima domanda" (apparentemente sotto le risposte)
+  // Bottone finale per confermare la risposta
   const nextBtn = document.createElement("button");
-  nextBtn.textContent = index < exam.length - 1 ? "Prossima domanda" : "Prossima domanda";
-  nextBtn.style.marginTop = "10px";
-  nextBtn.onclick = () => {
-    const checked = document.querySelector('input[name="answer"]:checked');
-    if (!checked) return alert("Seleziona una risposta");
 
-    selected[index] = parseInt(checked.value);
-    index++;
+  // Se siamo all'ultima domanda, mostra "Termina esame"
+  if (index === exam.length - 1) {
+    nextBtn.textContent = "Termina Esame";
+    nextBtn.onclick = () => finishExam();
+  } else {
+    nextBtn.textContent = "Prossima domanda";
+    nextBtn.onclick = () => {
+      const checked = document.querySelector('input[name="answer"]:checked');
+      if (!checked) return alert("Seleziona una risposta");
 
-    if (index < exam.length) showQuestion();
-    else finishExam();
-  };
+      selected[index] = parseInt(checked.value);
+      index++;
+      showQuestion();
+    };
+  }
+
+  nextBtn.style.marginTop = "15px";
   quiz.appendChild(nextBtn);
 }
 
@@ -121,10 +130,11 @@ function finishExam() {
   quiz.innerHTML += `<h3>Punteggio: ${score}/30</h3>`;
   quiz.innerHTML += `<h2>${score >= 18 ? "🎉 ESAME SUPERATO" : "❌ ESAME NON SUPERATO"}</h2>`;
 
-  // Bottone "Prossima domanda" finale per tornare alla schermata iniziale
+  // Bottone finale per tornare alla schermata iniziale
   const finishBtn = document.createElement("button");
-  finishBtn.textContent = "Prossima domanda";
+  finishBtn.textContent = "Fine";
   finishBtn.onclick = showStartScreen;
+  finishBtn.style.marginTop = "20px";
   quiz.appendChild(finishBtn);
 }
 
