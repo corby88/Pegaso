@@ -7,17 +7,24 @@ const nextBtn = document.getElementById("nextBtn");
 const timerDiv = document.getElementById("timer");
 
 let exam = [];
+let timerInterval;
 
 function startExam() {
+  selected = [];
+  index = 0;
+  time = 1800;
+  nextBtn.style.display = "inline-block";
+
   exam = [...questions].sort(() => 0.5 - Math.random()).slice(0, 30);
   showQuestion();
   startTimer();
 }
 
 function startTimer() {
-  const interval = setInterval(() => {
+  clearInterval(timerInterval); // evita timer multipli
+  timerInterval = setInterval(() => {
     if (time <= 0) {
-      clearInterval(interval);
+      clearInterval(timerInterval);
       finishExam();
     }
     time--;
@@ -52,6 +59,7 @@ nextBtn.onclick = () => {
 };
 
 function finishExam() {
+  clearInterval(timerInterval);
   let score = 0;
   quiz.innerHTML = "<h2>Risultato</h2>";
 
@@ -67,7 +75,14 @@ function finishExam() {
 
   quiz.innerHTML += `<h3>Punteggio: ${score}/30</h3>`;
   quiz.innerHTML += `<h2>${score >= 18 ? "🎉 ESAME SUPERATO" : "❌ ESAME NON SUPERATO"}</h2>`;
+
   nextBtn.style.display = "none";
+
+  // Aggiungi bottone per ricominciare
+  const restartBtn = document.createElement("button");
+  restartBtn.textContent = "Ricomincia Esame";
+  restartBtn.onclick = startExam;
+  quiz.appendChild(restartBtn);
 }
 
 startExam();
