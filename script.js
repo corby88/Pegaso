@@ -59,7 +59,7 @@ function showStartScreen() {
 function startExam() {
   selected = [];
   index = 0;
-  time = 1800;
+  //time = 1800;
 
   exam = [...questions].sort(() => 0.5 - Math.random()).slice(0, numQuestions);
 
@@ -70,7 +70,7 @@ function startExam() {
 // ===========================
 // Timer
 // ===========================
-function startTimer() {
+/*function startTimer() {
   clearInterval(timerInterval);
   timerDiv.textContent = "";
   timerInterval = setInterval(() => {
@@ -83,7 +83,7 @@ function startTimer() {
     const sec = String(time % 60).padStart(2, "0");
     timerDiv.textContent = `${min}:${sec}`;
   }, 1000);
-}
+}*/
 
 // ===========================
 // Mostra domanda
