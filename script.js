@@ -3,17 +3,30 @@ let index = 0;
 let time = 1800;
 
 const quiz = document.getElementById("quiz");
-const nextBtn = document.getElementById("nextBtn");
 const timerDiv = document.getElementById("timer");
 
 let exam = [];
 let timerInterval;
 
+// Mostra solo bottone "Inizia Esame"
+function showStartScreen() {
+  clearInterval(timerInterval);
+  selected = [];
+  index = 0;
+  time = 1800;
+  timerDiv.textContent = "";
+
+  quiz.innerHTML = '';
+  const startBtn = document.createElement("button");
+  startBtn.textContent = "Inizia Esame";
+  startBtn.onclick = startExam;
+  quiz.appendChild(startBtn);
+}
+
 function startExam() {
   selected = [];
   index = 0;
   time = 1800;
-  nextBtn.style.display = "inline-block";
 
   exam = [...questions].sort(() => 0.5 - Math.random()).slice(0, 30);
   showQuestion();
@@ -45,18 +58,21 @@ function showQuestion() {
         ${a.text}
       </div>`;
   });
+
+  const nextBtn = document.createElement("button");
+  nextBtn.textContent = index < exam.length - 1 ? "Prossima Domanda" : "Termina Esame";
+  nextBtn.onclick = () => {
+    const checked = document.querySelector('input[name="answer"]:checked');
+    if (!checked) return alert("Seleziona una risposta");
+
+    selected[index] = parseInt(checked.value);
+    index++;
+
+    if (index < exam.length) showQuestion();
+    else finishExam();
+  };
+  quiz.appendChild(nextBtn);
 }
-
-nextBtn.onclick = () => {
-  const checked = document.querySelector('input[name="answer"]:checked');
-  if (!checked) return alert("Seleziona una risposta");
-
-  selected[index] = parseInt(checked.value);
-  index++;
-
-  if (index < exam.length) showQuestion();
-  else finishExam();
-};
 
 function finishExam() {
   clearInterval(timerInterval);
@@ -76,13 +92,12 @@ function finishExam() {
   quiz.innerHTML += `<h3>Punteggio: ${score}/30</h3>`;
   quiz.innerHTML += `<h2>${score >= 18 ? "🎉 ESAME SUPERATO" : "❌ ESAME NON SUPERATO"}</h2>`;
 
-  nextBtn.style.display = "none";
-
-  // Aggiungi bottone per ricominciare
+  // Bottone per tornare alla schermata iniziale
   const restartBtn = document.createElement("button");
-  restartBtn.textContent = "Ricomincia Esame";
-  restartBtn.onclick = startExam;
+  restartBtn.textContent = "Ritorna alla schermata iniziale";
+  restartBtn.onclick = showStartScreen;
   quiz.appendChild(restartBtn);
 }
 
-startExam();
+// Mostra subito la schermata iniziale
+showStartScreen();
