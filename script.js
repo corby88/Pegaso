@@ -25,7 +25,7 @@ function showStartScreen() {
   const div = document.createElement("div");
 
   const label = document.createElement("label");
-  label.textContent = `Quante domande vuoi? (Massimo ${questions.length}): `;
+  label.textContent = `Quante domande vuoi affrontare? (1-${questions.length}): `;
   div.appendChild(label);
 
   const input = document.createElement("input");
@@ -40,6 +40,7 @@ function showStartScreen() {
   // Bottone per iniziare l'esame
   const startBtn = document.createElement("button");
   startBtn.textContent = "Inizia Esame";
+  startBtn.style.marginTop = "10px";
   quiz.appendChild(document.createElement("br"));
   quiz.appendChild(startBtn);
 
@@ -63,7 +64,7 @@ function startExam() {
   index = 0;
   time = 1800;
 
-  // Estraggo il numero di domande scelto dall’utente
+  // Estrazione casuale del numero di domande
   exam = [...questions].sort(() => 0.5 - Math.random()).slice(0, numQuestions);
 
   showQuestion();
@@ -126,6 +127,9 @@ function showQuestion() {
 
       selected[index] = i;
       div.style.backgroundColor = "#d4edda";
+
+      // Aggiorna i bottoni quando l’utente seleziona l’ultima domanda
+      showQuestionButtons();
     };
 
     div.appendChild(input);
@@ -133,9 +137,16 @@ function showQuestion() {
     quiz.appendChild(div);
   });
 
-  // Contenitore bottoni
+  showQuestionButtons();
+}
+
+// ===========================
+// Mostra i bottoni sotto la domanda
+// ===========================
+function showQuestionButtons() {
   const btnBox = document.createElement("div");
   btnBox.style.marginTop = "10px";
+  btnBox.style.textAlign = "center"; // centra i bottoni
 
   // Bottone PRECEDENTE
   if (index > 0) {
@@ -148,22 +159,17 @@ function showQuestion() {
     btnBox.appendChild(prevBtn);
   }
 
-  // Bottone PROSSIMA / TERMINA
+  // Controllo se tutte le domande sono state risposte
+  const allAnswered = selected.filter(s => s === undefined).length === 0;
+
+  // Bottone PROSSIMA o TERMINA
   const nextBtn = document.createElement("button");
   nextBtn.style.marginLeft = "5px";
 
-  if (index === exam.length - 1) {
+  if (index === exam.length - 1 && allAnswered) {
     nextBtn.textContent = "Termina Esame";
     nextBtn.classList.add("terminate");
-    nextBtn.onclick = () => {
-      // Controlla se tutte le domande sono state risposte
-      const unanswered = selected.filter(s => s === undefined).length;
-      if (unanswered > 0) {
-        alert(`Devi rispondere a tutte le domande prima di terminare. Domande mancanti: ${unanswered}`);
-        return;
-      }
-      finishExam();
-    };
+    nextBtn.onclick = finishExam;
   } else {
     nextBtn.textContent = "Prossima domanda";
     nextBtn.onclick = () => {
