@@ -25,7 +25,7 @@ function showStartScreen() {
   const div = document.createElement("div");
 
   const label = document.createElement("label");
-  label.textContent = `Quante domande vuoi? (MAX${questions.length}): `;
+  label.textContent = `Quante domande vuoi? (Massimo ${questions.length}): `;
   div.appendChild(label);
 
   const input = document.createElement("input");
@@ -106,13 +106,13 @@ function showQuestion() {
     const input = document.createElement("input");
     input.type = "radio";
     input.name = "answer";
-    input.id = `q${index}_a${i}`; // id unico per label
+    input.id = `q${index}_a${i}`;
     input.value = i;
 
     const label = document.createElement("label");
     label.htmlFor = input.id;
     label.textContent = a.text;
-    label.style.cursor = "pointer"; // indica che è cliccabile
+    label.style.cursor = "pointer";
     label.style.marginLeft = "8px";
 
     if (selected[index] === i) {
@@ -155,12 +155,20 @@ function showQuestion() {
   if (index === exam.length - 1) {
     nextBtn.textContent = "Termina Esame";
     nextBtn.classList.add("terminate");
-    nextBtn.onclick = finishExam;
+    nextBtn.onclick = () => {
+      // Controlla se tutte le domande sono state risposte
+      const unanswered = selected.filter(s => s === undefined).length;
+      if (unanswered > 0) {
+        alert(`Devi rispondere a tutte le domande prima di terminare. Domande mancanti: ${unanswered}`);
+        return;
+      }
+      finishExam();
+    };
   } else {
     nextBtn.textContent = "Prossima domanda";
     nextBtn.onclick = () => {
       if (selected[index] === undefined) {
-        alert("Seleziona una risposta");
+        alert("Devi selezionare una risposta prima di continuare!");
         return;
       }
       index++;
@@ -197,7 +205,7 @@ function finishExam() {
 
   quiz.innerHTML += `<h3>Punteggio: ${score}/${numQuestions}</h3>`;
 
-  const passMark = Math.ceil(numQuestions * 0.6); // superato se ≥60%
+  const passMark = Math.ceil(numQuestions * 0.6);
   quiz.innerHTML += `<h2>${score >= passMark ? "🎉 ESAME SUPERATO" : "❌ ESAME NON SUPERATO"}</h2>`;
 
   const finishBtn = document.createElement("button");
