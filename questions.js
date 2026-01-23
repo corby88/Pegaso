@@ -16,5 +16,14 @@ const questions = [
       { text: "temporanei", correct: false },
       { text: "non strutturati", correct: false }
     ]
+  },
+   {
+    text: "Un sistema informativo di un'organizzazione è:",
+    answers: [
+      { text: "un sistema informatico che rappresenta l'informazione esclusivamente attraverso dati", correct: false },
+      { text: "un componente che consente di gestire le informazioni di interesse per la stessa", correct: true },
+      { text: "un componente del sistema informatico dell'organizzazione", correct: false },
+      { text: "un insieme di dati", correct: false }
+    ]
   }
 ];
