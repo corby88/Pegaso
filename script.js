@@ -24,7 +24,7 @@ function showStartScreen() {
   const div = document.createElement("div");
 
   const label = document.createElement("label");
-  label.textContent = `Quante domande vuoi? (Massimo ${questions.length}): `;
+  label.textContent = `Quante domande vuoi affrontare? (1-${questions.length}): `;
   div.appendChild(label);
 
   const input = document.createElement("input");
@@ -124,7 +124,7 @@ function showQuestion() {
       selected[index] = i;
       div.style.backgroundColor = "#d4edda";
 
-      // Aggiorna i bottoni quando si risponde
+      // Aggiorna i bottoni dinamicamente
       showQuestionButtons();
     };
 
@@ -140,7 +140,7 @@ function showQuestion() {
 // Mostra i bottoni sotto la domanda
 // ===========================
 function showQuestionButtons() {
-  // Rimuove eventuali bottoni precedenti per evitare duplicazioni
+  // Rimuove eventuali bottoni precedenti
   const oldBtnBox = document.querySelector(".btn-box");
   if (oldBtnBox) oldBtnBox.remove();
 
@@ -165,8 +165,10 @@ function showQuestionButtons() {
     btnBox.appendChild(emptyDiv);
   }
 
+  // Controllo se tutte le domande sono state risposte, inclusa quella corrente
+  const allAnswered = selected.length === exam.length && selected.every(s => s !== undefined);
+
   // Bottone PROSSIMA o TERMINA (destra)
-  const allAnswered = selected.filter(s => s === undefined).length === 0;
   const nextBtn = document.createElement("button");
 
   if (index === exam.length - 1 && allAnswered) {
