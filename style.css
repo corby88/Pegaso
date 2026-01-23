@@ -1,22 +1,44 @@
+/* Corpo pagina */
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
+  font-family: 'Arial', sans-serif;
+  background: #f0f4f8;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
 }
 
+/* Contenitore principale */
 #app {
   width: 700px;
   margin: 40px auto;
-  background: white;
-  padding: 25px;
-  border-radius: 10px;
+  background: #ffffff;
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
+/* Titolo */
+#app h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Timer */
 #timer {
   font-size: 22px;
-  color: red;
+  color: #e74c3c; /* rosso acceso */
   text-align: right;
+  margin-bottom: 20px;
+  font-weight: bold;
 }
 
+/* Risposte */
 .answer {
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
   margin: 10px 0;
-}
+  cursor: pointer;
+  transit
