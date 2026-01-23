@@ -24,7 +24,7 @@ function showStartScreen() {
   const div = document.createElement("div");
 
   const label = document.createElement("label");
-  label.textContent = `Quante domande vuoi affrontare? (1-${questions.length}): `;
+  label.textContent = `Quante domande vuoi? (Massimo ${questions.length}): `;
   div.appendChild(label);
 
   const input = document.createElement("input");
@@ -124,7 +124,7 @@ function showQuestion() {
       selected[index] = i;
       div.style.backgroundColor = "#d4edda";
 
-      // Aggiorna i bottoni quando si risponde all'ultima domanda
+      // Aggiorna i bottoni quando si risponde
       showQuestionButtons();
     };
 
@@ -140,10 +140,16 @@ function showQuestion() {
 // Mostra i bottoni sotto la domanda
 // ===========================
 function showQuestionButtons() {
+  // Rimuove eventuali bottoni precedenti per evitare duplicazioni
+  const oldBtnBox = document.querySelector(".btn-box");
+  if (oldBtnBox) oldBtnBox.remove();
+
   const btnBox = document.createElement("div");
+  btnBox.className = "btn-box";
   btnBox.style.marginTop = "10px";
   btnBox.style.display = "flex";
-  btnBox.style.justifyContent = "space-between"; // bottone sinistra e destra
+  btnBox.style.justifyContent = "space-between";
+  btnBox.style.alignItems = "center";
 
   // Bottone PRECEDENTE (sinistra)
   if (index > 0) {
@@ -155,27 +161,29 @@ function showQuestionButtons() {
     };
     btnBox.appendChild(prevBtn);
   } else {
-    const placeholder = document.createElement("div");
-    btnBox.appendChild(placeholder);
+    const emptyDiv = document.createElement("div");
+    btnBox.appendChild(emptyDiv);
   }
 
   // Bottone PROSSIMA o TERMINA (destra)
   const allAnswered = selected.filter(s => s === undefined).length === 0;
   const nextBtn = document.createElement("button");
-  nextBtn.textContent = (index === exam.length - 1 && allAnswered) ? "✔" : "➡";
-  nextBtn.className = (index === exam.length - 1 && allAnswered) ? "terminate" : "";
-  nextBtn.onclick = () => {
-    if (selected[index] === undefined) {
-      alert("Devi selezionare una risposta prima di continuare!");
-      return;
-    }
-    if (index === exam.length - 1 && allAnswered) {
-      finishExam();
-    } else {
+
+  if (index === exam.length - 1 && allAnswered) {
+    nextBtn.textContent = "✔"; // Termina Esame
+    nextBtn.className = "terminate";
+    nextBtn.onclick = finishExam;
+  } else {
+    nextBtn.textContent = "➡"; // Prossima domanda
+    nextBtn.onclick = () => {
+      if (selected[index] === undefined) {
+        alert("Devi selezionare una risposta prima di continuare!");
+        return;
+      }
       index++;
       showQuestion();
-    }
-  };
+    };
+  }
 
   btnBox.appendChild(nextBtn);
   quiz.appendChild(btnBox);
