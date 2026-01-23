@@ -21,11 +21,10 @@ function showStartScreen() {
 
   quiz.innerHTML = '';
 
-  // Container input numero di domande
   const div = document.createElement("div");
 
   const label = document.createElement("label");
-  label.textContent = `Quante domande vuoi? (Massimo ${questions.length}): `;
+  label.textContent = `Quante domande vuoi affrontare? (1-${questions.length}): `;
   div.appendChild(label);
 
   const input = document.createElement("input");
@@ -37,14 +36,12 @@ function showStartScreen() {
 
   quiz.appendChild(div);
 
-  // Bottone per iniziare l'esame
   const startBtn = document.createElement("button");
   startBtn.textContent = "Inizia Esame";
   startBtn.style.marginTop = "10px";
   quiz.appendChild(document.createElement("br"));
   quiz.appendChild(startBtn);
 
-  // Evento del bottone
   startBtn.addEventListener("click", () => {
     const val = parseInt(input.value);
     if (isNaN(val) || val < 1 || val > questions.length) {
@@ -64,7 +61,6 @@ function startExam() {
   index = 0;
   time = 1800;
 
-  // Estrazione casuale del numero di domande
   exam = [...questions].sort(() => 0.5 - Math.random()).slice(0, numQuestions);
 
   showQuestion();
@@ -128,7 +124,7 @@ function showQuestion() {
       selected[index] = i;
       div.style.backgroundColor = "#d4edda";
 
-      // Aggiorna i bottoni quando l’utente seleziona l’ultima domanda
+      // Aggiorna i bottoni quando si risponde all'ultima domanda
       showQuestionButtons();
     };
 
@@ -146,41 +142,40 @@ function showQuestion() {
 function showQuestionButtons() {
   const btnBox = document.createElement("div");
   btnBox.style.marginTop = "10px";
-  btnBox.style.textAlign = "center"; // centra i bottoni
+  btnBox.style.display = "flex";
+  btnBox.style.justifyContent = "space-between"; // bottone sinistra e destra
 
-  // Bottone PRECEDENTE
+  // Bottone PRECEDENTE (sinistra)
   if (index > 0) {
     const prevBtn = document.createElement("button");
-    prevBtn.textContent = "⬅ Domanda precedente";
+    prevBtn.textContent = "⬅";
     prevBtn.onclick = () => {
       index--;
       showQuestion();
     };
     btnBox.appendChild(prevBtn);
+  } else {
+    const placeholder = document.createElement("div");
+    btnBox.appendChild(placeholder);
   }
 
-  // Controllo se tutte le domande sono state risposte
+  // Bottone PROSSIMA o TERMINA (destra)
   const allAnswered = selected.filter(s => s === undefined).length === 0;
-
-  // Bottone PROSSIMA o TERMINA
   const nextBtn = document.createElement("button");
-  nextBtn.style.marginLeft = "5px";
-
-  if (index === exam.length - 1 && allAnswered) {
-    nextBtn.textContent = "Termina Esame";
-    nextBtn.classList.add("terminate");
-    nextBtn.onclick = finishExam;
-  } else {
-    nextBtn.textContent = "Prossima domanda";
-    nextBtn.onclick = () => {
-      if (selected[index] === undefined) {
-        alert("Devi selezionare una risposta prima di continuare!");
-        return;
-      }
+  nextBtn.textContent = (index === exam.length - 1 && allAnswered) ? "✔" : "➡";
+  nextBtn.className = (index === exam.length - 1 && allAnswered) ? "terminate" : "";
+  nextBtn.onclick = () => {
+    if (selected[index] === undefined) {
+      alert("Devi selezionare una risposta prima di continuare!");
+      return;
+    }
+    if (index === exam.length - 1 && allAnswered) {
+      finishExam();
+    } else {
       index++;
       showQuestion();
-    };
-  }
+    }
+  };
 
   btnBox.appendChild(nextBtn);
   quiz.appendChild(btnBox);
